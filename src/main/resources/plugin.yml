@@ -1,0 +1,8 @@
+name: JSDiscordWebhook
+version: ${project.version}
+main: io.github.jieshengnp.jsdiscordwebhook.JSDiscordWebhook
+api-version: 1.17
+authors: [ JieSheng03 ]
+description: A minecraft plugin that syncs with the server with Discord using Webhooks.
+website: github.com/JieShengNP
+load: STARTUP
