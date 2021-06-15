@@ -2,6 +2,7 @@ package io.github.jieshengnp.jsdiscordwebhook.discord;
 
 import com.google.common.collect.ImmutableList;
 import io.github.jieshengnp.jsdiscordwebhook.JSDiscordWebhook;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -9,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.List;
 
 public class DiscordBotListener extends ListenerAdapter {
@@ -25,34 +27,34 @@ public class DiscordBotListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         super.onGuildMessageReceived(event);
-        if (!event.getAuthor().isBot()){
-            if (event.getMessage().getContentRaw().startsWith(PREFIX)){
-                String[] args = event.getMessage().getContentRaw().split("\\s+");
-                if (event.getChannel().getName().equalsIgnoreCase(CHANNEL_NAME)){
-                    if (args[0].equalsIgnoreCase(PREFIX + "list")){
-                        event.getChannel().sendMessage(String.format("**[%d/%d] players online.**", JSDISCORDWEBHOOK.getServer().getOnlinePlayers().size(), JSDISCORDWEBHOOK.getServer().getMaxPlayers())).queue();
-                        List<Player> playerList = ImmutableList.copyOf(JSDISCORDWEBHOOK.getServer().getOnlinePlayers());
-                        if (playerList.size() > 0) {
-                            StringBuilder onlinePlayers = new StringBuilder("Player(s): ");
-                            for (int i = 0; i < playerList.size(); i++) {
-                                if ((i == playerList.size() - 1) && JSDISCORDWEBHOOK.getServer().getOnlinePlayers().size() != 1) {
-                                    onlinePlayers.append(playerList.get(i).getName()).append(", ");
-                                }
-                                else {
-                                    onlinePlayers.append(playerList.get(i).getName());
-                                }
+        if (event.getChannel().getName().equalsIgnoreCase(CHANNEL_NAME)) {
+            if (!event.getAuthor().isBot()) {
+                if (event.getMessage().getContentRaw().equalsIgnoreCase(PREFIX + "list")){
+                    EmbedBuilder embedBuilder = new EmbedBuilder();
+                    embedBuilder.setTitle(String.format("**[%d/%d] players online.**", JSDISCORDWEBHOOK.getServer().getOnlinePlayers().size(), JSDISCORDWEBHOOK.getServer().getMaxPlayers()));
+                    embedBuilder.setColor(Color.black);
+                    List<Player> playerList = ImmutableList.copyOf(JSDISCORDWEBHOOK.getServer().getOnlinePlayers());
+                    if (playerList.size() > 0) {
+                        StringBuilder onlinePlayers = new StringBuilder("Player(s): ");
+                        for (int i = 0; i < playerList.size(); i++) {
+                            if ((i == playerList.size() - 1) && JSDISCORDWEBHOOK.getServer().getOnlinePlayers().size() != 1) {
+                                onlinePlayers.append(playerList.get(i).getName()).append(", ");
+                            } else {
+                                onlinePlayers.append(playerList.get(i).getName());
                             }
-                            event.getChannel().sendMessage(onlinePlayers.toString()).queue();
                         }
+                        embedBuilder.setDescription(onlinePlayers.toString());
+                    } else {
+                        embedBuilder.setDescription("No players online");
                     }
+                    event.getChannel().sendMessage(embedBuilder.build()).queue();
+                    return;
                 }
-            } else {
                 String message = "";
                 message += ChatColor.GOLD + "[Discord] ";
-                message += ChatColor.RESET + event.getAuthor().getName() +" > ";
+                message += ChatColor.RESET + event.getAuthor().getName() + " > ";
                 message += event.getMessage().getContentRaw();
                 JSDISCORDWEBHOOK.getServer().broadcastMessage(message);
-
             }
         }
     }
