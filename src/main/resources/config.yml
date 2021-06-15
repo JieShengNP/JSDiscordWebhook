@@ -1,4 +1,5 @@
-#####################
-#  Discord Webhook  #
-#####################
+# Discord Webhook Config v${project.version}
 webhook-url: "link-here"
+bot-token: "token-here"
+bot-prefix: "!"
+bot-channel-name: "minecraft"
