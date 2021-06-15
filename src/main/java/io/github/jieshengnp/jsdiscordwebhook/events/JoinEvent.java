@@ -11,11 +11,8 @@ public class JoinEvent implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         WebhookSender webhook = new WebhookSender(JSDiscordWebhook.getWebhookLink());
-//        String joinMessage = event.getPlayer().getName() + "has joined the server.";
-//        String playerCount = String.format("[%d/%d] players online.", event.getPlayer().getServer().getOnlinePlayers().size(), event.getPlayer().getServer().getMaxPlayers());
-//        webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription(joinMessage + "\n" + playerCount));
         webhook.setUsername("Server");
         webhook.setContent("[+] **" + event.getPlayer().getName() + "**");
-        webhook.sendWebhook(event.getPlayer().getServer().getLogger(), "Join Sync Error");
+        webhook.sendWebhook(event.getPlayer().getServer().getLogger(), "Error sending player join messages to Discord");
     }
 }

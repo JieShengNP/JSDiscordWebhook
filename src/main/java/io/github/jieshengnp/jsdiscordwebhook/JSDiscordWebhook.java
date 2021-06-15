@@ -18,69 +18,73 @@ public final class JSDiscordWebhook extends JavaPlugin {
 
     private final Plugin plugin = this;
     private static String webhooklink;
-    private static String botToken;
     private static JDA jda;
-    private static String botPrefix;
-    private static String botChannel;
+    private static boolean webhookEnabled;
 
     @Override
     public void onEnable() {
         plugin.saveDefaultConfig();
-        webhooklink = plugin.getConfig().getString("webhook-url");
-        botToken = plugin.getConfig().getString("bot-token");
-        botPrefix = plugin.getConfig().getString("bot-prefix");
-        botChannel = plugin.getConfig().getString("bot-channel-name");
         WebhookStartup();
-        BotStartup();
+        if (webhookEnabled) {
+            BotStartup();
+        }
     }
 
     @Override
     public void onDisable() {
+        saveConfig();
         if (jda != null){
             jda.shutdownNow();
         }
-        WebhookSender webhook = new WebhookSender(webhooklink);
-        webhook.setUsername("Server");
-        webhook.addEmbed(new WebhookSender.EmbedObject().setDescription("Server is now closing...").setColor(Color.RED));
-        webhook.sendWebhook(plugin.getLogger(), "Disable Error");
+        if (webhookEnabled) {
+            WebhookSender webhook = new WebhookSender(webhooklink);
+            webhook.setUsername("Server");
+            webhook.addEmbed(new WebhookSender.EmbedObject().setDescription("Server is now closing...").setColor(Color.RED));
+            webhook.sendWebhook(plugin.getLogger(), "Error sending message on shutdown");
+        }
         plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[JSDiscordWebhook] is now Disabled.");
-        saveConfig();
     }
 
     public static String getWebhookLink(){
         return webhooklink;
     }
 
-    public void WebhookStartup(){
-        if (webhooklink.startsWith("https://discord.com/api/webhooks/")){
+    public void WebhookStartup() {
+        webhooklink = plugin.getConfig().getString("webhook-url", "");
+        if (webhooklink.startsWith("https://discord.com/api/webhooks/")) {
             WebhookSender webhook = new WebhookSender(webhooklink);
             webhook.setUsername("Server");
-            webhook.addEmbed(new WebhookSender.EmbedObject().setDescription("Server is now starting...").setColor(Color.GREEN));
-            webhook.sendWebhook(plugin.getLogger(), "Startup Error");
-        } else {
-            plugin.getLogger().severe(ChatColor.RED + "Discord Webhook link is improperly configured.");
-            plugin.getLogger().severe(ChatColor.RED + "It should start with \"https://discord.com/api/webhooks/\"");
-            plugin.getServer().getPluginManager().disablePlugin(plugin);
-            return;
+            webhook.addEmbed(new WebhookSender.EmbedObject().setDescription("Server is starting...").setColor(Color.GREEN));
+            if (webhook.sendWebhook(plugin.getLogger(), "Error sending message on start-up")) {
+                webhookEnabled = true;
+                plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[JSDiscordWebhook] is now Enabled.");
+                plugin.getServer().getPluginManager().registerEvents(new JoinEvent(), this);
+                plugin.getServer().getPluginManager().registerEvents(new ChatEvent(), this);
+                plugin.getServer().getPluginManager().registerEvents(new LeaveEvent(), this);
+                return;
+            }
         }
-        plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[JSDiscordWebhook] is now Enabled.");
-        plugin.getServer().getPluginManager().registerEvents(new JoinEvent(), this);
-        plugin.getServer().getPluginManager().registerEvents(new ChatEvent(), this);
-        plugin.getServer().getPluginManager().registerEvents(new LeaveEvent(), this);
+        plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Discord Webhook link might be improperly configured.");
+        plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "It should start with \"https://discord.com/api/webhooks/\"");
+        this.setEnabled(false);
+        plugin.getServer().getPluginManager().disablePlugin(plugin);
     }
 
     public void BotStartup(){
+        String botToken = plugin.getConfig().getString("bot-token");
+        String botPrefix = plugin.getConfig().getString("bot-prefix");
+        String botChannel = plugin.getConfig().getString("bot-channel-name");
         try {
             jda = JDABuilder.createDefault(botToken).build();
         } catch (LoginException e) {
-            plugin.getLogger().severe("Error creating Bot.");
-            plugin.getLogger().severe(e.getStackTrace().toString());
-            plugin.getLogger().severe("Check your bot token?");
+            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Error creating Discord-Bot.");
+            e.printStackTrace();
+            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Check your bot token?");
         }
         if (jda != null){
             jda.addEventListener(new DiscordBotListener(this, botPrefix, botChannel));
         } else {
-            plugin.getLogger().severe("Bot is not initialised.");
+            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "Discord Bot is not initialised.");
         }
     }
 }

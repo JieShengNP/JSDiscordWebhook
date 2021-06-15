@@ -14,6 +14,6 @@ public class ChatEvent implements Listener {
         webhook.setUsername(event.getPlayer().getName());
         webhook.setAvatarUrl("https://crafatar.com/avatars/" + event.getPlayer().getUniqueId());
         webhook.setContent(event.getMessage().replace("@everyone", "`@everyone`").replace("@here", "`@here`"));
-        webhook.sendWebhook(event.getPlayer().getServer().getLogger(), "Join Sync Error");
+        webhook.sendWebhook(event.getPlayer().getServer().getLogger(), "Error sending message from chat to Discord");
     }
 }

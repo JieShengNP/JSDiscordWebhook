@@ -11,11 +11,9 @@ public class LeaveEvent implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event){
         WebhookSender webhook = new WebhookSender(JSDiscordWebhook.getWebhookLink());
-//        String leaveMessage = event.getPlayer().getName() + " has left the server.";
-//        webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription(leaveMessage));
         webhook.setUsername("Server");
         webhook.setContent("[-] **" + event.getPlayer().getName() + "**");
-        webhook.sendWebhook(event.getPlayer().getServer().getLogger(), "Quit Sync Error");
+        webhook.sendWebhook(event.getPlayer().getServer().getLogger(), "Error sending player quit messages to Discord");
 
     }
 }

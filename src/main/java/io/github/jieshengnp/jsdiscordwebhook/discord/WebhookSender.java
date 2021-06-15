@@ -11,12 +11,14 @@ public class WebhookSender extends DiscordWebhook {
      * @param logger The output source.
      * @param errorMessage The error message if exception occurs. (With stacktrace)
      **/
-    public void sendWebhook(Logger logger, String errorMessage){
+    public boolean sendWebhook(Logger logger, String errorMessage){
         try {
             this.execute();
         } catch (java.io.IOException e){
             logger.severe(errorMessage);
-            logger.severe(e.getStackTrace().toString());
+            e.printStackTrace();
+            return false;
         }
+        return true;
     }
 }
