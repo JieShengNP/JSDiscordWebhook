@@ -1,6 +1,6 @@
 package io.github.jieshengnp.jsdiscordwebhook;
 
-import io.github.jieshengnp.jsdiscordwebhook.Discord.DiscordWebhook;
+import io.github.jieshengnp.jsdiscordwebhook.Discord.WebhookSender;
 import io.github.jieshengnp.jsdiscordwebhook.EventListeners.ChatEvent;
 import io.github.jieshengnp.jsdiscordwebhook.EventListeners.JoinEvent;
 import io.github.jieshengnp.jsdiscordwebhook.EventListeners.LeaveEvent;
@@ -18,18 +18,32 @@ public final class JSDiscordWebhook extends JavaPlugin {
     public void onEnable() {
         plugin.saveDefaultConfig();
         webhooklink = plugin.getConfig().getString("webhook-url");
+        WebhookStartup();
+    }
+
+    @Override
+    public void onDisable() {
+        WebhookSender webhook = new WebhookSender(webhooklink);
+        webhook.setUsername("Server");
+        webhook.addEmbed(new WebhookSender.EmbedObject().setDescription("Server is now closing...").setColor(Color.RED));
+        webhook.sendWebhook(plugin.getLogger(), "Disable Error");
+        plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[JSDiscordWebhook] is now Disabled.");
+
+    }
+
+    public static String getWebhookLink(){
+        return webhooklink;
+    }
+
+    public void WebhookStartup(){
         if (webhooklink.startsWith("https://discord.com/api/webhooks/")){
-            DiscordWebhook webhook = new DiscordWebhook(webhooklink);
+            WebhookSender webhook = new WebhookSender(webhooklink);
             webhook.setUsername("Server");
-            webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Server is now starting...").setColor(Color.GREEN));
-            try {
-                webhook.execute();
-            } catch (java.io.IOException e) {
-                plugin.getServer().getLogger().severe(e.getStackTrace().toString());
-            }
+            webhook.addEmbed(new WebhookSender.EmbedObject().setDescription("Server is now starting...").setColor(Color.GREEN));
+            webhook.sendWebhook(plugin.getLogger(), "Startup Error");
         } else {
-            plugin.getServer().getLogger().severe(ChatColor.RED + "Discord Webhook link is improperly configured.");
-            plugin.getServer().getLogger().severe(ChatColor.RED + "It should start with \"https://discord.com/api/webhooks/\"");
+            plugin.getLogger().severe(ChatColor.RED + "Discord Webhook link is improperly configured.");
+            plugin.getLogger().severe(ChatColor.RED + "It should start with \"https://discord.com/api/webhooks/\"");
             plugin.getServer().getPluginManager().disablePlugin(plugin);
             return;
         }
@@ -37,23 +51,5 @@ public final class JSDiscordWebhook extends JavaPlugin {
         plugin.getServer().getPluginManager().registerEvents(new JoinEvent(), this);
         plugin.getServer().getPluginManager().registerEvents(new ChatEvent(), this);
         plugin.getServer().getPluginManager().registerEvents(new LeaveEvent(), this);
-    }
-
-    @Override
-    public void onDisable() {
-        DiscordWebhook webhook = new DiscordWebhook(webhooklink);
-        webhook.setUsername("Server");
-        webhook.addEmbed(new DiscordWebhook.EmbedObject().setDescription("Server is now closing...").setColor(Color.RED));
-        try {
-            webhook.execute();
-        } catch (java.io.IOException e){
-            plugin.getServer().getLogger().severe(e.getStackTrace().toString());
-        }
-        plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[JSDiscordWebhook] is now Disabled.");
-
-    }
-
-    public static String getWebhookLink(){
-        return webhooklink;
     }
 }
