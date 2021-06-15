@@ -1,9 +1,9 @@
 package io.github.jieshengnp.jsdiscordwebhook;
 
-import io.github.jieshengnp.jsdiscordwebhook.Discord.WebhookSender;
-import io.github.jieshengnp.jsdiscordwebhook.EventListeners.ChatEvent;
-import io.github.jieshengnp.jsdiscordwebhook.EventListeners.JoinEvent;
-import io.github.jieshengnp.jsdiscordwebhook.EventListeners.LeaveEvent;
+import io.github.jieshengnp.jsdiscordwebhook.discord.WebhookSender;
+import io.github.jieshengnp.jsdiscordwebhook.events.ChatEvent;
+import io.github.jieshengnp.jsdiscordwebhook.events.JoinEvent;
+import io.github.jieshengnp.jsdiscordwebhook.events.LeaveEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;

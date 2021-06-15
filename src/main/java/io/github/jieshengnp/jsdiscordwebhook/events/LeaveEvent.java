@@ -1,6 +1,6 @@
-package io.github.jieshengnp.jsdiscordwebhook.EventListeners;
+package io.github.jieshengnp.jsdiscordwebhook.events;
 
-import io.github.jieshengnp.jsdiscordwebhook.Discord.WebhookSender;
+import io.github.jieshengnp.jsdiscordwebhook.discord.WebhookSender;
 import io.github.jieshengnp.jsdiscordwebhook.JSDiscordWebhook;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,4 +1,4 @@
-package io.github.jieshengnp.jsdiscordwebhook.Discord;
+package io.github.jieshengnp.jsdiscordwebhook.discord;
 
 import java.util.logging.Logger;
 
