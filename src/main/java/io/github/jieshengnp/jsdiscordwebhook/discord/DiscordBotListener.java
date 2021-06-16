@@ -37,7 +37,7 @@ public class DiscordBotListener extends ListenerAdapter {
                     if (playerList.size() > 0) {
                         StringBuilder onlinePlayers = new StringBuilder("Player(s): ");
                         for (int i = 0; i < playerList.size(); i++) {
-                            if ((i == playerList.size() - 1) && JSDISCORDWEBHOOK.getServer().getOnlinePlayers().size() != 1) {
+                            if ((i < playerList.size() - 1) && JSDISCORDWEBHOOK.getServer().getOnlinePlayers().size() != 1) {
                                 onlinePlayers.append(playerList.get(i).getName()).append(", ");
                             } else {
                                 onlinePlayers.append(playerList.get(i).getName());
