@@ -3,6 +3,7 @@ package io.github.jieshengnp.jsdiscordwebhook;
 import io.github.jieshengnp.jsdiscordwebhook.discord.DiscordBotListener;
 import io.github.jieshengnp.jsdiscordwebhook.discord.WebhookSender;
 import io.github.jieshengnp.jsdiscordwebhook.events.ChatEvent;
+import io.github.jieshengnp.jsdiscordwebhook.events.DeathEvent;
 import io.github.jieshengnp.jsdiscordwebhook.events.JoinEvent;
 import io.github.jieshengnp.jsdiscordwebhook.events.LeaveEvent;
 import net.dv8tion.jda.api.JDA;
@@ -61,6 +62,7 @@ public final class JSDiscordWebhook extends JavaPlugin {
                 plugin.getServer().getPluginManager().registerEvents(new JoinEvent(), this);
                 plugin.getServer().getPluginManager().registerEvents(new ChatEvent(), this);
                 plugin.getServer().getPluginManager().registerEvents(new LeaveEvent(), this);
+                plugin.getServer().getPluginManager().registerEvents(new DeathEvent(), this);
                 return;
             }
         }
