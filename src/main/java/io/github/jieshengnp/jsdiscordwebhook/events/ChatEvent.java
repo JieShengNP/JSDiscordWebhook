@@ -13,7 +13,7 @@ public class ChatEvent implements Listener {
         WebhookSender webhook = new WebhookSender(JSDiscordWebhook.getWebhookLink());
         webhook.setUsername(event.getPlayer().getName());
         webhook.setAvatarUrl("https://crafatar.com/avatars/" + event.getPlayer().getUniqueId());
-        webhook.setContent(event.getMessage().replace("@everyone", "`@everyone`").replace("@here", "`@here`"));
+        webhook.setContent(event.getMessage().replace("@everyone", "`@everyone`").replace("@here", "`@here`").replace("\\", "\\\\"));
         webhook.sendWebhook(event.getPlayer().getServer().getLogger(), "Error sending message from chat to Discord");
     }
 }
