@@ -13,6 +13,7 @@ public class DeathEvent implements Listener {
     public void onDeathEvent(PlayerDeathEvent event){
         WebhookSender webhook = new WebhookSender(JSDiscordWebhook.getWebhookLink());
         webhook.setUsername(event.getEntity().getName());
+        webhook.setAvatarUrl("https://crafatar.com/avatars/" + event.getEntity().getUniqueId());
         webhook.addEmbed(new WebhookSender.EmbedObject().setDescription(event.getDeathMessage()).setColor(Color.YELLOW));
         webhook.sendWebhook(event.getEntity().getServer().getLogger(), "Error sending death messages to Discord");
     }
